@@ -12,6 +12,7 @@ import com.intellij.ui.dsl.builder.*
 import java.awt.BorderLayout
 import java.awt.Color
 import javax.swing.DefaultComboBoxModel
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JSlider
 
@@ -173,12 +174,17 @@ class PdfViewerSettingsForm : JPanel() {
   private val scrollingGroup = panel {
     group(PdfViewerBundle.message("pdf.viewer.settings.group.scrolling")) {
       row(PdfViewerBundle.message("pdf.viewer.settings.scroll.speed")) {
-        cell(JSlider(5, 30).apply {
-          value = (scrollSpeed.get() * 10).toInt()
+        val valueLabel = JLabel(String.format("%.2f", scrollSpeed.get()))
+
+        cell(JSlider(10, 300).apply {  // Range from 0.1 to 3.0
+          value = (scrollSpeed.get() * 100).toInt()
           addChangeListener {
-            scrollSpeed.set(value / 10.0f)
+            val floatValue = value / 100.0f
+            scrollSpeed.set(floatValue)
+            valueLabel.text = String.format("%.2f", floatValue)
           }
         })
+        cell(valueLabel)
         rowComment(PdfViewerBundle.message("pdf.viewer.settings.scroll.speed.comment"))
       }
       row {
