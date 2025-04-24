@@ -46,7 +46,7 @@ class ScrollManager(private val viewer: ViewerAdapter) {
   private fun performDirectScroll(delta: Double) {
     // Get the current viewer container
     val container = viewer.viewerApp.pdfViewer.container
-    container.scrollTop = (container.scrollTop + delta).toInt()
+    container.scrollTop = container.scrollTop + delta
   }
 
   private fun performSmoothScroll(delta: Double) {
@@ -57,7 +57,7 @@ class ScrollManager(private val viewer: ViewerAdapter) {
     val targetScrollTop = container.scrollTop + delta
     val startScrollTop = container.scrollTop
     val startTime = window.performance.now()
-    val duration = 300 // 300ms for smooth animation
+    val duration = 300
 
     fun animateScroll(currentTime: Double) {
       val elapsed = currentTime - startTime
@@ -67,10 +67,12 @@ class ScrollManager(private val viewer: ViewerAdapter) {
       val easedProgress = if (progress < 0.5) {
         2 * progress * progress
       } else {
-        1 - Math.pow(-2 * progress + 2, 2) / 2
+        Math.subtract(1, Math.pow(-2 * progress + 2, 2) / 2)
       }
 
-      container.scrollTop = startScrollTop + (targetScrollTop - startScrollTop) * easedProgress
+      val distance = targetScrollTop - startScrollTop
+      val amount = distance * easedProgress
+      container.scrollTop = startScrollTop + amount
 
       if (progress < 1.0) {
         smoothScrollAnimationId = window.requestAnimationFrame { animateScroll(it) }

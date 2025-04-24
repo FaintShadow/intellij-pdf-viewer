@@ -1,5 +1,7 @@
 package com.firsttimeinforever.intellij.pdf.viewer.application.pdfjs.types
 
+import org.w3c.dom.Element
+
 external class PdfViewer {
   @Suppress("PropertyName")
   val _location: PdfViewerLocation
@@ -12,4 +14,7 @@ external class PdfViewer {
   var currentPageNumber: Int
   val currentScale: Int
   var currentScaleValue: String
+
+  // Added for scroll manager
+  val container: Element
 }

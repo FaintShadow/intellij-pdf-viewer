@@ -5,6 +5,7 @@ import com.firsttimeinforever.intellij.pdf.viewer.model.SidebarViewMode
 import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.not
+import com.intellij.openapi.observable.util.transform
 import com.intellij.ui.ColorPanel
 import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.dsl.builder.*
@@ -12,6 +13,7 @@ import java.awt.BorderLayout
 import java.awt.Color
 import javax.swing.DefaultComboBoxModel
 import javax.swing.JPanel
+import javax.swing.JSlider
 
 class PdfViewerSettingsForm : JPanel() {
   private val settings
@@ -130,6 +132,8 @@ class PdfViewerSettingsForm : JPanel() {
       row { cell(generalSettingsGroup).align(AlignX.FILL) }
       row { cell(invertColorsGroup).align(AlignX.FILL) }
       row { cell(customColorsGroup).align(AlignX.FILL) }
+      // Scrolling Manager
+      row { cell(scrollingGroup).align(AlignX.FILL) }
     })
   }
 
@@ -143,6 +147,10 @@ class PdfViewerSettingsForm : JPanel() {
     customForegroundColor.set(settings.customForegroundColor)
     customBackgroundColor.set(settings.customBackgroundColor)
     customIconColor.set(settings.customIconColor)
+    // Scrolling Manager
+    scrollSpeed.set(settings.scrollSpeed)
+    dynamicScrolling.set(settings.dynamicScrolling)
+    smoothScrolling.set(settings.smoothScrolling)
   }
 
   private fun resetViewerColorsToTheme() {
@@ -165,9 +173,13 @@ class PdfViewerSettingsForm : JPanel() {
   private val scrollingGroup = panel {
     group(PdfViewerBundle.message("pdf.viewer.settings.group.scrolling")) {
       row(PdfViewerBundle.message("pdf.viewer.settings.scroll.speed")) {
-        slider(0.5, 3.0, 0.1, 1)
-          .bindValue(scrollSpeed)
-          .comment(PdfViewerBundle.message("pdf.viewer.settings.scroll.speed.comment"))
+        cell(JSlider(5, 30).apply {
+          value = (scrollSpeed.get() * 10).toInt()
+          addChangeListener {
+            scrollSpeed.set(value / 10.0f)
+          }
+        })
+        rowComment(PdfViewerBundle.message("pdf.viewer.settings.scroll.speed.comment"))
       }
       row {
         checkBox(PdfViewerBundle.message("pdf.viewer.settings.dynamic.scrolling"))
