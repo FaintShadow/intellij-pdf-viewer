@@ -226,6 +226,13 @@ class PdfJcefPreviewController(val project: Project, val virtualFile: VirtualFil
   override fun settingsChanged(settings: PdfViewerSettings) {
     logger.info("Settings changed")
     updateViewTheme(collectThemeColors())
+
+    // Send scroll settings to the web view
+    pipe.send(IdeMessages.UpdateScrollSettings(
+      settings.scrollSpeed,
+      settings.dynamicScrolling,
+      settings.smoothScrolling
+    ))
   }
 
   fun find(query: SearchQuery, direction: SearchDirection) {

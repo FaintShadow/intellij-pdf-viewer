@@ -103,23 +103,23 @@ class PdfViewerSettingsForm : JPanel() {
           .comment(PdfViewerBundle.message("pdf.viewer.settings.group.colors.viewer.comment"))
       }
       indent {
-          panel {
-            row(PdfViewerBundle.message("pdf.viewer.settings.foreground")) {
-              cell(foregroundColorPanel)
+        panel {
+          row(PdfViewerBundle.message("pdf.viewer.settings.foreground")) {
+            cell(foregroundColorPanel)
+          }
+          row(PdfViewerBundle.message("pdf.viewer.settings.background")) {
+            cell(backgroundColorPanel)
+          }
+          row(PdfViewerBundle.message("pdf.viewer.settings.icons")) {
+            cell(iconColorPanel)
+            rowComment(PdfViewerBundle.message("pdf.viewer.settings.icons.color.notice"))
+          }
+          row {
+            link(PdfViewerBundle.message("pdf.viewer.settings.set.current.theme")) {
+              resetViewerColorsToTheme()
             }
-            row(PdfViewerBundle.message("pdf.viewer.settings.background")) {
-              cell(backgroundColorPanel)
-            }
-            row(PdfViewerBundle.message("pdf.viewer.settings.icons")) {
-              cell(iconColorPanel)
-              rowComment(PdfViewerBundle.message("pdf.viewer.settings.icons.color.notice"))
-            }
-            row {
-              link(PdfViewerBundle.message("pdf.viewer.settings.set.current.theme")) {
-                resetViewerColorsToTheme()
-              }
-            }
-          }.enabledIf(useCustomColors)
+          }
+        }.enabledIf(useCustomColors)
       }
     }
   }
@@ -153,6 +153,32 @@ class PdfViewerSettingsForm : JPanel() {
       customForegroundColor.set(defaultForegroundColor.rgb)
       iconColorPanel.selectedColor = defaultIconColor
       customIconColor.set(defaultIconColor.rgb)
+    }
+  }
+
+  // Adding to the properties
+  val scrollSpeed = properties.property(settings.scrollSpeed)
+  val dynamicScrolling = properties.property(settings.dynamicScrolling)
+  val smoothScrolling = properties.property(settings.smoothScrolling)
+
+  // In the panel creation
+  private val scrollingGroup = panel {
+    group(PdfViewerBundle.message("pdf.viewer.settings.group.scrolling")) {
+      row(PdfViewerBundle.message("pdf.viewer.settings.scroll.speed")) {
+        slider(0.5, 3.0, 0.1, 1)
+          .bindValue(scrollSpeed)
+          .comment(PdfViewerBundle.message("pdf.viewer.settings.scroll.speed.comment"))
+      }
+      row {
+        checkBox(PdfViewerBundle.message("pdf.viewer.settings.dynamic.scrolling"))
+          .bindSelected(dynamicScrolling)
+          .comment(PdfViewerBundle.message("pdf.viewer.settings.dynamic.scrolling.comment"))
+      }
+      row {
+        checkBox(PdfViewerBundle.message("pdf.viewer.settings.smooth.scrolling"))
+          .bindSelected(smoothScrolling)
+          .comment(PdfViewerBundle.message("pdf.viewer.settings.smooth.scrolling.comment"))
+      }
     }
   }
 }

@@ -56,4 +56,12 @@ object IdeMessages {
 
   @Serializable
   data class NavigateHistory(val direction: HistoryNavigationDirection)
+
+  // Scrolling
+  @Serializable
+  data class UpdateScrollSettings(
+    val scrollSpeed: Float,
+    val dynamicScrolling: Boolean,
+    val smoothScrolling: Boolean
+  )
 }

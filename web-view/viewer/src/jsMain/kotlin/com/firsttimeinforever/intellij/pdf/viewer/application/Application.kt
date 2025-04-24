@@ -32,6 +32,9 @@ class Application(private val viewer: ViewerAdapter) {
 
   private val synctexSearchController = SynctexSearchController(pipe, viewer)
 
+  // Scroll props
+  private val scrollManager = ScrollManager(viewer)
+
   // @Suppress("MemberVisibilityCanBePrivate")
   // val documentInfo by lazy { collectDocumentInfo() }
 
@@ -111,6 +114,12 @@ class Application(private val viewer: ViewerAdapter) {
     setupSearch()
     pipe.subscribe<IdeMessages.BeforeReload> {
       pipe.send(BrowserMessages.BeforeReloadViewState(collectViewState()))
+    }
+    // Scrolling Manager:
+    scrollManager.initialize()
+
+    pipe.subscribe<IdeMessages.UpdateScrollSettings> {
+      scrollManager.updateSettings(it.scrollSpeed, it.dynamicScrolling, it.smoothScrolling)
     }
   }
 
